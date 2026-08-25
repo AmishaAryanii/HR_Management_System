@@ -51,7 +51,7 @@ function monthName(m) { return MONTHS[(m || 1) - 1] || 'Unknown'; }
 
 function PremiumHeader({ company }) {
   return (
-    <div className="bg-white border-b-4 border-blue-600 px-8 py-6">
+    <div className="bg-white border-b-4 border-blue-600 px-4 sm:px-8 py-4 sm:py-6">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
           {company?.logo ? (
@@ -160,7 +160,7 @@ function PayslipDocumentView({ company, payslip }) {
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-card">
       {/* Print / Download buttons */}
-      <div className="flex justify-end gap-2 px-8 pt-4 print:hidden">
+      <div className="flex flex-wrap justify-end gap-2 px-4 sm:px-8 pt-4 print:hidden">
         <button
           onClick={() => window.print()}
           className="btn-secondary flex items-center gap-1.5 text-sm"
@@ -184,14 +184,14 @@ function PayslipDocumentView({ company, payslip }) {
         subtitle={`SALARY SLIP FOR THE MONTH OF ${periodLabel.toUpperCase()} — REF: ${payslipRef}`}
       />
 
-      <div className="px-8 py-6 space-y-8 bg-white">
+      <div className="px-4 sm:px-8 py-4 sm:py-6 space-y-6 sm:space-y-8 bg-white">
         {/* Employee Details - Two column grid */}
         <section>
           <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-3 flex items-center gap-2">
             <span className="w-1 h-4 bg-blue-600 rounded-full" />
             Employee Information
           </h3>
-          <div className="grid grid-cols-2 gap-x-8 gap-y-3 bg-gray-50 rounded-xl p-5 border border-gray-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-8 gap-y-3 bg-gray-50 rounded-xl p-3 sm:p-5 border border-gray-100">
             <div className="flex justify-between items-center border-b border-dotted border-gray-200 pb-1.5">
               <span className="text-xs text-gray-500">Employee Name</span>
               <span className="text-sm font-semibold text-black">{empName}</span>
@@ -241,8 +241,8 @@ function PayslipDocumentView({ company, payslip }) {
             <span className="w-1 h-4 bg-blue-600 rounded-full" />
             Earnings & Deductions
           </h3>
-          <div className="overflow-hidden rounded-xl border border-gray-200">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto rounded-xl border border-gray-200">
+            <table className="w-full text-sm min-w-[500px]">
               <thead>
                 <tr className="bg-blue-600 text-white">
                   <th className="text-left px-4 py-2.5 font-semibold">Earnings</th>
@@ -278,7 +278,7 @@ function PayslipDocumentView({ company, payslip }) {
 
         {/* Net Pay - Premium Highlight */}
         <section>
-          <div className="bg-blue-600 rounded-xl p-6 text-white">
+          <div className="bg-blue-600 rounded-xl p-4 sm:p-6 text-white">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-blue-100 text-xs uppercase tracking-wider">Net Payable</p>
@@ -295,7 +295,7 @@ function PayslipDocumentView({ company, payslip }) {
         </section>
 
         {/* Notes & Issued By */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <section>
             <h3 className="text-sm font-bold text-black mb-2 flex items-center gap-2">
               <span className="w-1 h-4 bg-gray-400 rounded-full" />
@@ -320,7 +320,7 @@ function PayslipDocumentView({ company, payslip }) {
       </div>
 
       {/* Footer */}
-      <div className="bg-white border-t-2 border-blue-600 px-8 py-3 text-center">
+      <div className="bg-white border-t-2 border-blue-600 px-4 sm:px-8 py-3 text-center">
         <p className="text-[10px] text-gray-400">
           {company?.companyName || 'Debox Technology'} — {company?.address || 'Office No. 1529, 15th Floor, Diamond Galaxy Plaza, Sector 4, Greater Noida, 201009'}
         </p>

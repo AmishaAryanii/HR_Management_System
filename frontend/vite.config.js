@@ -19,6 +19,18 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: false
-  }
+    sourcemap: false,
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-charts': ['recharts'],
+        },
+      },
+    },
+  },
+  preview: {
+    port: 4173,
+  },
 });

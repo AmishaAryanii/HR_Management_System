@@ -62,7 +62,7 @@ function TabButton({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+      className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
         active ? 'bg-primary-600 text-white shadow-sm' : 'text-secondary-600 hover:bg-gray-100'
       }`}
     >
@@ -211,7 +211,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex flex-wrap gap-2 bg-white rounded-xl border border-gray-200 p-2">
+      <div className="flex gap-1.5 sm:gap-2 bg-white rounded-xl border border-gray-200 p-1.5 sm:p-2 overflow-x-auto scrollbar-hide">
         {tabs.map(tab => (
           <TabButton key={tab.id} active={activeTab === tab.id} onClick={() => setActiveTab(tab.id)}>
             <tab.icon className="w-4 h-4 inline mr-1.5 -mt-0.5" />

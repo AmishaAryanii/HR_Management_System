@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { taskAPI, employeeAPI, authAPI } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 import DataTable from '../../components/common/DataTable';
 import Modal from '../../components/common/Modal';
 import StatCard from '../../components/common/StatCard';
@@ -7,17 +8,18 @@ import toast from 'react-hot-toast';
 import { HiOutlinePlus, HiOutlineClipboardList, HiOutlineCheckCircle, HiOutlineClock } from 'react-icons/hi';
 
 export default function TaskPage() {
+  const { user, userRole } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentRole, setCurrentRole] = useState(null);
   const [form, setForm] = useState({ title: '', description: '', priority: 'medium', assignedTo: '', dueDate: '', category: '' });
 
-  // Roles allowed to create/assign tasks. Keep this in sync with the
-  // backend's authorize('super_admin', 'admin', 'manager') check on
-  // POST /tasks — if that list changes, update this too.
+  // Roles allowed to create/assign tasks
   const CAN_CREATE_TASK_ROLES = ['super_admin', 'admin', 'manager'];
+  const canCreateTask = CAN_CREATE_TASK_ROLES.includes(userRole);
+  // Admin/Super Admin cannot assign tasks to themselves
+  const isAdmin = userRole === 'admin' || userRole === 'super_admin';
 
   const fetchData = async () => {
     setLoading(true);
@@ -27,20 +29,18 @@ export default function TaskPage() {
   };
 
   const fetchEmployees = async () => {
-    try { const res = await employeeAPI.getLite(); setEmployees(res.data.data || []); }
-    catch { toast.error('Failed to load employees'); }
-  };
-
-  const fetchCurrentUser = async () => {
     try {
-      const res = await authAPI.getMe();
-      setCurrentRole(res.data?.data?.role || null);
-    } catch {
-      setCurrentRole(null);
-    }
+      const res = await employeeAPI.getLite();
+      let list = res.data.data || [];
+      // Admin/Super Admin: remove self from dropdown
+      if (isAdmin && user?.employee?.id) {
+        list = list.filter(e => e.id !== user.employee.id);
+      }
+      setEmployees(list);
+    } catch { toast.error('Failed to load employees'); }
   };
 
-  useEffect(() => { fetchData(); fetchEmployees(); fetchCurrentUser(); }, []);
+  useEffect(() => { fetchData(); fetchEmployees(); }, [user]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -57,7 +57,6 @@ export default function TaskPage() {
   // Task model statuses: assigned, in_progress, completed, verified, closed, cancelled
   const inProgress = tasks.filter(t => t.status === 'assigned' || t.status === 'in_progress').length;
   const completedCount = tasks.filter(t => t.status === 'completed' || t.status === 'verified' || t.status === 'closed').length;
-  const canCreateTask = CAN_CREATE_TASK_ROLES.includes(currentRole);
 
   const columns = [
     { header: 'Title', accessor: 'title' },
@@ -103,10 +102,12 @@ export default function TaskPage() {
                   className="input-field"
                   required
                 >
-                  <option value="">Select Employee</option>
+                  <option value="">
+                    {employees.length === 0 ? 'No employees available' : 'Select Employee'}
+                  </option>
                   {employees.map(emp => (
                     <option key={emp.id} value={emp.id}>
-                      {emp.firstName} {emp.lastName} ({emp.employeeId})
+                      {emp.firstName} {emp.lastName} ({emp.employeeId}){emp.department ? ` — ${emp.department.name}` : ''}
                     </option>
                   ))}
                 </select>

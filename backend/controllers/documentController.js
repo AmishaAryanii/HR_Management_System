@@ -14,6 +14,14 @@ const getDocuments = asyncHandler(async (req, res) => {
   if (req.user.role === 'employee') {
     const emp = await Employee.findOne({ where: { userId: req.user.id } });
     if (emp) where.employeeId = emp.id;
+  } else if (req.user.role === 'manager') {
+    const emp = await Employee.findOne({ where: { userId: req.user.id } });
+    if (emp) {
+      const subordinates = await Employee.findAll({ where: { reportingManagerId: emp.id }, attributes: ['id'] });
+      const subIds = subordinates.map(s => s.id);
+      subIds.push(emp.id); // include manager's own docs
+      where.employeeId = { [require('../models').Sequelize.Op.in]: subIds };
+    }
   }
 
   const { count, rows } = await Document.findAndCountAll({
@@ -39,10 +47,21 @@ const uploadDocument = asyncHandler(async (req, res) => {
   const { title, type, description, employeeId } = req.body;
   let empId = employeeId;
 
+  // Employees can only upload for themselves
   if (req.user.role === 'employee') {
     const emp = await Employee.findOne({ where: { userId: req.user.id } });
     if (!emp) return res.status(404).json({ success: false, message: 'Employee not found' });
     empId = emp.id;
+  } else if (req.user.role === 'manager') {
+    // Managers can only upload for their subordinates
+    const managerEmp = await Employee.findOne({ where: { userId: req.user.id } });
+    if (!managerEmp) return res.status(404).json({ success: false, message: 'Employee not found' });
+    if (empId && parseInt(empId) !== managerEmp.id) {
+      const target = await Employee.findByPk(parseInt(empId));
+      if (!target || target.reportingManagerId !== managerEmp.id) {
+        return res.status(403).json({ success: false, message: 'You can only upload documents for your team members' });
+      }
+    }
   }
 
   const document = await Document.create({

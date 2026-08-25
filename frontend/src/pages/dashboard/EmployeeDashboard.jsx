@@ -32,7 +32,7 @@ export default function EmployeeDashboard() {
     return (
       <div>
         <div className="page-header"><h1 className="page-title">My Dashboard</h1><p className="page-subtitle">Your personal overview</p></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           <StatCard icon={HiOutlineCalendar} label="Today's Attendance" value="--" color="primary" />
           <StatCard icon={HiOutlinePaperAirplane} label="Leave Balance" value="--" color="success" />
           <StatCard icon={HiOutlineClipboardList} label="Pending Tasks" value="--" color="warning" />
@@ -62,7 +62,7 @@ export default function EmployeeDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         <StatCard icon={HiOutlineCalendar} label="Today's Status" value={attendanceStatus === 'absent' ? 'Not Checked In' : attendanceStatus} color={statusColor} />
         <StatCard icon={HiOutlinePaperAirplane} label="Leave Balance" value={`${parseFloat(leaveBal?.casual || 0) + parseFloat(leaveBal?.sick || 0)} days`} color="success" subtitle={`${leaveBal?.casual || 0} casual, ${leaveBal?.sick || 0} sick`} />
         <StatCard icon={HiOutlineClipboardList} label="Pending Tasks" value={data.tasks?.pending || 0} color="warning" />

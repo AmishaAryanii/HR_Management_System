@@ -8,6 +8,6 @@ router.use(authenticate);
 router.get('/', getTimesheets);
 router.post('/', createTimesheet);
 router.put('/:id/status', authorize('super_admin', 'admin', 'manager'), updateTimesheetStatus);
-router.delete('/:id', deleteTimesheet);
+router.delete('/:id', authorize('super_admin', 'admin', 'manager'), deleteTimesheet);
 
 module.exports = router;

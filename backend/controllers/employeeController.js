@@ -87,7 +87,7 @@ const getEmployees = asyncHandler(async (req, res) => {
 const getEmployeesLite = asyncHandler(async (req, res) => {
   const where = { employmentStatus: 'active' };
 
-  // Managers can only see their team
+  // Managers can only see their team members (subordinates only, not themselves)
   if (req.user.role === 'manager') {
     const managerEmployee = await Employee.findOne({ where: { userId: req.user.id } });
     if (managerEmployee) {

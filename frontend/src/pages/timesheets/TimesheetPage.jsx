@@ -150,8 +150,8 @@ export default function TimesheetPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold text-secondary-900">Timesheets</h1>
           <p className="text-sm text-secondary-500 mt-1">Log and manage work hours</p>
@@ -161,15 +161,15 @@ export default function TimesheetPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <StatCard icon={HiOutlineClock} label="This Week" value={`${meta.weeklyHours}h`} color="primary" />
         <StatCard icon={HiOutlineCalendar} label="Total Entries" value={meta.total} color="info" />
         {canReview && <StatCard icon={HiOutlineCheckCircle} label="Pending Review" value={meta.pendingCount} color="warning" />}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {['', 'pending', 'approved', 'rejected'].map(s => (
-          <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === s ? 'bg-primary-600 text-white' : 'bg-gray-100 text-secondary-600 hover:bg-gray-200'}`}>
+          <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${filter === s ? 'bg-primary-600 text-white' : 'bg-gray-100 text-secondary-600 hover:bg-gray-200'}`}>
             {s || 'All'}
           </button>
         ))}

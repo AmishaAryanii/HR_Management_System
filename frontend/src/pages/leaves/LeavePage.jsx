@@ -47,10 +47,17 @@ export default function LeavePage() {
     } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
   };
 
-  const handleApprove = async (id, role) => {
+  const handleApproveByManager = async (id) => {
     try {
-      if (role === 'manager') await leaveAPI.approveByManager(id, '');
-      else await leaveAPI.approveByAdmin(id, '');
+      await leaveAPI.approveByManager(id, '');
+      toast.success('Leave approved by manager — pending admin approval');
+      fetchData();
+    } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
+  };
+
+  const handleApproveByAdmin = async (id) => {
+    try {
+      await leaveAPI.approveByAdmin(id, '');
       toast.success('Leave approved');
       fetchData();
     } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
@@ -62,6 +69,25 @@ export default function LeavePage() {
     catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
   };
 
+  // Determine display status: pending stays pending until admin approves
+  const getDisplayStatus = (r) => {
+    if (r.status === 'approved') return 'approved';
+    if (r.status === 'rejected') return 'rejected';
+    if (r.status === 'cancelled') return 'cancelled';
+    // pending OR approved_by_manager — both show as Pending
+    if (r.approvedByManager) return 'pending_manager';
+    return 'pending';
+  };
+
+  // Status display config — only 4 visible states
+  const statusConfig = {
+    pending: { label: 'Pending', class: 'bg-amber-100 text-amber-700 ring-amber-200/50', dot: 'bg-amber-500' },
+    pending_manager: { label: 'Pending Admin', class: 'bg-blue-100 text-blue-700 ring-blue-200/50', dot: 'bg-blue-500' },
+    approved: { label: 'Approved', class: 'bg-emerald-100 text-emerald-700 ring-emerald-200/50', dot: 'bg-emerald-500' },
+    rejected: { label: 'Rejected', class: 'bg-rose-100 text-rose-700 ring-rose-200/50', dot: 'bg-rose-500' },
+    cancelled: { label: 'Cancelled', class: 'bg-gray-100 text-gray-600 ring-gray-200/50', dot: 'bg-gray-400' },
+  };
+
   const columns = [
     { header: 'Employee', render: (r) => r.employee ? `${r.employee.firstName} ${r.employee.lastName}` : '-' },
     { header: 'Type', render: (r) => <span className="badge badge-info">{r.leaveType}</span> },
@@ -69,15 +95,50 @@ export default function LeavePage() {
     { header: 'To', accessor: 'endDate' },
     { header: 'Days', accessor: 'totalDays' },
     { header: 'Status', render: (r) => {
-      const map = { pending: 'badge-warning', approved_by_manager: 'badge-info', approved: 'badge-success', rejected: 'badge-danger', cancelled: 'badge-secondary' };
-      return <span className={`badge ${map[r.status] || 'badge-secondary'}`}>{r.status.replace('_', ' ')}</span>;
+      const display = getDisplayStatus(r);
+      const sc = statusConfig[display] || statusConfig.pending;
+      return (
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ring-1 ring-inset ${sc.class}`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
+          {sc.label}
+        </span>
+      );
     }},
-    { header: 'Actions', render: (r) => r.status === 'pending' && hasPermission(['manager', 'admin', 'super_admin']) ? (
-      <div className="flex gap-2">
-        <button onClick={(e) => { e.stopPropagation(); handleApprove(r.id, 'manager'); }} className="p-1.5 hover:bg-green-50 rounded"><HiOutlineCheck className="w-4 h-4 text-success-600" /></button>
-        <button onClick={(e) => { e.stopPropagation(); handleReject(r.id); }} className="p-1.5 hover:bg-red-50 rounded"><HiOutlineX className="w-4 h-4 text-danger-600" /></button>
-      </div>
-    ) : null }
+    { header: 'Actions', render: (r) => {
+      const display = getDisplayStatus(r);
+      const isPendingNoManager = r.status === 'pending' && !r.approvedByManager;
+      const isPendingWithManager = r.status === 'pending' && r.approvedByManager;
+      // Also handle legacy approved_by_manager status
+      const isLegacyManagerApproved = r.status === 'approved_by_manager';
+      const canManagerApprove = (isPendingNoManager) && isManager;
+      const canAdminApprove = (isPendingNoManager || isPendingWithManager || isLegacyManagerApproved) && isAdmin;
+
+      if (canManagerApprove) {
+        return (
+          <div className="flex gap-2">
+            <button onClick={(e) => { e.stopPropagation(); handleApproveByManager(r.id); }} className="p-1.5 hover:bg-green-50 rounded" title="Approve">
+              <HiOutlineCheck className="w-4 h-4 text-success-600" />
+            </button>
+            <button onClick={(e) => { e.stopPropagation(); handleReject(r.id); }} className="p-1.5 hover:bg-red-50 rounded" title="Reject">
+              <HiOutlineX className="w-4 h-4 text-danger-600" />
+            </button>
+          </div>
+        );
+      }
+      if (canAdminApprove) {
+        return (
+          <div className="flex gap-2">
+            <button onClick={(e) => { e.stopPropagation(); handleApproveByAdmin(r.id); }} className="p-1.5 hover:bg-green-50 rounded" title="Approve">
+              <HiOutlineCheck className="w-4 h-4 text-success-600" />
+            </button>
+            <button onClick={(e) => { e.stopPropagation(); handleReject(r.id); }} className="p-1.5 hover:bg-red-50 rounded" title="Reject">
+              <HiOutlineX className="w-4 h-4 text-danger-600" />
+            </button>
+          </div>
+        );
+      }
+      return null;
+    }}
   ];
 
   return (

@@ -37,15 +37,15 @@ export default function PerformancePage() {
     }
   };
 
-  // ── Fetch employees separately — same as PayrollPage ──
+  // ── Fetch employees separately — managers only see their team (NOT themselves) ──
   const fetchEmployees = () => {
     if (!canCreateReview) return;
     if (userRole === 'manager') {
       employeeAPI.getMyTeam()
         .then(res => {
           const teamData = res.data.data;
-          const allMembers = [...(teamData.team || []), teamData.myself].filter(Boolean);
-          setEmployees(allMembers);
+          // Only subordinates — exclude the manager themselves
+          setEmployees(teamData.team || []);
         })
         .catch(err => console.error('Team fetch error:', err));
     } else {
@@ -142,11 +142,11 @@ export default function PerformancePage() {
                 required
               >
                 <option value="">
-                  {employees.length === 0 ? 'Loading employees...' : 'Select employee...'}
+                  {employees.length === 0 ? 'No team members to review' : userRole === 'manager' ? 'Select team member...' : 'Select employee...'}
                 </option>
                 {employees.map(emp => (
                   <option key={emp.id} value={emp.id}>
-                    {emp.firstName} {emp.lastName} ({emp.employeeId})
+                    {emp.firstName} {emp.lastName} ({emp.employeeId}){emp.department ? ` — ${emp.department.name}` : ''}
                   </option>
                 ))}
               </select>

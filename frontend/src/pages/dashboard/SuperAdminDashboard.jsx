@@ -31,13 +31,13 @@ export default function SuperAdminDashboard() {
     return (
       <div>
         <div className="page-header"><div><h1 className="page-title">Super Admin Dashboard</h1><p className="page-subtitle">Full system overview and analytics</p></div></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <StatCard icon={HiOutlineUsers} label="Total Employees" value="--" color="primary" />
           <StatCard icon={HiOutlineOfficeBuilding} label="Total Departments" value="--" color="success" />
           <StatCard icon={HiOutlineShieldCheck} label="Admins" value="--" color="info" />
           <StatCard icon={HiOutlineUserGroup} label="Managers" value="--" color="warning" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           <StatCard icon={HiOutlineCalendar} label="Today Present" value="--" color="primary" />
           <StatCard icon={HiOutlinePaperAirplane} label="Pending Leaves" value="--" color="warning" />
           <StatCard icon={HiOutlineCash} label="Payroll This Month" value="--" color="success" />
@@ -60,14 +60,14 @@ export default function SuperAdminDashboard() {
         <div><h1 className="page-title">Super Admin Dashboard</h1><p className="page-subtitle">Full system overview and analytics</p></div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         <StatCard icon={HiOutlineUsers} label="Total Employees" value={overview?.totalEmployees} color="primary" />
         <StatCard icon={HiOutlineOfficeBuilding} label="Total Departments" value={charts?.departmentDistribution?.length || 0} color="success" />
         <StatCard icon={HiOutlineShieldCheck} label="Admins" value={overview?.totalAdmins} color="info" />
         <StatCard icon={HiOutlineUserGroup} label="Managers" value={overview?.totalManagers} color="warning" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         <StatCard icon={HiOutlineCalendar} label="Today Present" value={attendance?.todayPresent} color="primary" />
         <StatCard icon={HiOutlinePaperAirplane} label="Pending Leaves" value={leave?.pending} color="warning" />
         <StatCard icon={HiOutlineCash} label={`Payroll $${parseFloat(payroll?.totalNetPay || 0).toLocaleString()}`} value="This Month" color="success" subtitle={`${payroll?.paid || 0} paid, ${payroll?.processed || 0} processed`} />

@@ -117,11 +117,9 @@ export default function Sidebar() {
             </div>
           )}
         </div>
-        {!mobileSidebarOpen && (
-          <button onClick={closeMobileSidebar} className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100/80 flex-shrink-0 transition-colors">
-            <HiOutlineX className="w-4 h-4 text-secondary-400" />
-          </button>
-        )}
+        <button onClick={closeMobileSidebar} className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100/80 flex-shrink-0 transition-colors">
+          <HiOutlineX className="w-4 h-4 text-secondary-400" />
+        </button>
       </div>
 
       {/* User info */}

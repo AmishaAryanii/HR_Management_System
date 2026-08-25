@@ -80,6 +80,14 @@ const createTask = asyncHandler(async (req, res) => {
   if (!emp) return res.status(404).json({ success: false, message: 'Employee not found' });
 
   const { title, description, priority, assignedTo, dueDate, category } = req.body;
+
+  // Admin/Super Admin cannot assign tasks to themselves
+  if (['admin', 'super_admin'].includes(req.user.role)) {
+    if (parseInt(assignedTo) === emp.id) {
+      return res.status(400).json({ success: false, message: 'Admin cannot assign tasks to themselves. Please assign to another employee.' });
+    }
+  }
+
   const task = await Task.create({ title, description, priority, assignedTo, dueDate, category, assignedBy: emp.id, departmentId: emp.departmentId });
 
   // Notify assignee

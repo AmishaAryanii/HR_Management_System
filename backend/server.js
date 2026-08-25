@@ -34,7 +34,9 @@ const app = express();
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.APP_URL || 'http://localhost:5173',
+  origin: process.env.NODE_ENV === 'production'
+    ? [process.env.APP_URL, process.env.FRONTEND_URL].filter(Boolean)
+    : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -118,6 +120,17 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
+
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+  app.use(express.static(frontendDist));
+  // SPA fallback — serve index.html for non-API routes
+  app.get('*', (req, res, next) => {
+    if (req.originalUrl.startsWith('/api')) return next();
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+}
 
 // Error handling
 app.use(notFound);

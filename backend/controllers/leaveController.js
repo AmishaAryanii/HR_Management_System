@@ -110,7 +110,7 @@ const applyLeave = asyncHandler(async (req, res) => {
   const leave = await Leave.create({
     employeeId: employee.id,
     leaveType, startDate, endDate, totalDays, reason, document,
-    status: employee.reportingManagerId ? 'pending' : 'approved'
+    status: 'pending'
   });
 
   // Update balance
@@ -160,13 +160,26 @@ const approveByManager = asyncHandler(async (req, res) => {
     }
   }
 
+  // Manager approves internally — status stays 'pending' until admin finalizes
   await leave.update({
-    status: 'approved_by_manager',
     managerComment: comment,
     approvedByManager: employee.id,
     approvedByManagerName: `${employee.firstName} ${employee.lastName}`,
     approvedByManagerRole: 'manager'
   });
+
+  // Notify employee that manager approved, awaiting admin
+  const empUser = await Employee.findByPk(leave.employeeId, { include: [{ association: 'user' }] });
+  if (empUser?.user) {
+    await notifyUser({
+      userId: empUser.user.id,
+      employeeId: empUser.id,
+      type: 'leave_request',
+      title: 'Leave - Manager Approved',
+      message: `Your ${leave.leaveType} leave request has been approved by your manager (${employee.firstName} ${employee.lastName}). Awaiting admin approval.`,
+      actionUrl: `/leaves/${leave.id}`
+    });
+  }
 
   // Notify admin
   const admins = await Employee.findAll({
@@ -183,12 +196,12 @@ const approveByManager = asyncHandler(async (req, res) => {
       recipients: adminRecipients,
       type: 'leave_request',
       title: 'Leave Request - Manager Approved',
-      message: `Leave request from ${leave.employee.firstName} ${leave.employee.lastName} requires admin approval`,
+      message: `Leave request from ${leave.employee.firstName} ${leave.employee.lastName} requires your approval`,
       actionUrl: `/leaves/${leave.id}`
     });
   }
 
-  res.json({ success: true, message: 'Leave approved by manager', data: leave });
+  res.json({ success: true, message: 'Leave approved by manager — pending admin approval', data: leave });
 });
 
 const approveByAdmin = asyncHandler(async (req, res) => {

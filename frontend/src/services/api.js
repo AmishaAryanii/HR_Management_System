@@ -184,6 +184,8 @@ export const announcementAPI = {
   create: (data) => api.post('/announcements', data),
   update: (id, data) => api.put(`/announcements/${id}`, data),
   delete: (id) => api.delete(`/announcements/${id}`),
+  publish: (id) => api.put(`/announcements/${id}/publish`),
+  unpublish: (id) => api.put(`/announcements/${id}/unpublish`),
 };
 
 // Document API

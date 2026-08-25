@@ -6,12 +6,15 @@
     "install:all": "cd backend && npm install && cd ../frontend && npm install",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
-    "dev": "echo 'Start backend and frontend in separate terminals: npm run dev:backend & npm run dev:frontend'",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "build": "cd frontend && npm run build",
     "start": "cd backend && npm start",
+    "start:production": "NODE_ENV=production cd backend && node server.js",
+    "preview": "cd frontend && npx vite preview",
     "migrate": "cd backend && npx sequelize-cli db:migrate",
     "seed": "cd backend && npx sequelize-cli db:seed:all",
-    "setup": "echo '1. Create MySQL database: CREATE DATABASE hrms;' && echo '2. Run: npm run migrate' && echo '3. Run: npm run seed' && echo '4. Run: npm run dev:backend' && echo '5. Run: npm run dev:frontend'"
+    "setup": "echo '1. Create MySQL database: CREATE DATABASE hrms;' && echo '2. Run: npm run migrate' && echo '3. Run: npm run seed' && echo '4. Run: npm run dev:backend' && echo '5. Run: npm run dev:frontend'",
+    "postinstall": "npm run install:all"
   },
   "keywords": ["hrms", "hr", "management"],
   "license": "MIT"

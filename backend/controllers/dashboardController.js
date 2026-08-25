@@ -74,8 +74,33 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
 
   const todayPresent = await Attendance.count({ where: { date: today, status: { [Op.in]: ['present', 'late'] } } });
   const todayAbsent = await Attendance.count({ where: { date: today, status: 'absent' } });
+  const todayLate = await Attendance.count({ where: { date: today, status: 'late' } });
   const pendingLeaves = await Leave.count({ where: { status: 'pending' } });
   const pendingTasks = await Task.count({ where: { status: { [Op.in]: ['assigned', 'in_progress'] } } });
+
+  // Get today's attendance records with employee details
+  const todayAttendanceRecords = await Attendance.findAll({
+    where: { date: today },
+    include: [{
+      model: Employee,
+      as: 'employee',
+      attributes: ['id', 'firstName', 'lastName', 'employeeId'],
+      include: [{ model: Department, as: 'department', attributes: ['name'] }]
+    }],
+    order: [['checkIn', 'ASC']]
+  });
+
+  // Also get active employees who have no attendance record today (missing)
+  const attendedEmployeeIds = todayAttendanceRecords.map(r => r.employeeId);
+  const missingEmployees = await Employee.findAll({
+    where: {
+      employmentStatus: 'active',
+      id: { [Op.notIn]: attendedEmployeeIds.length > 0 ? attendedEmployeeIds : [0] }
+    },
+    attributes: ['id', 'firstName', 'lastName', 'employeeId'],
+    include: [{ model: Department, as: 'department', attributes: ['name'] }],
+    limit: 20
+  });
 
   const recentActivities = await ActivityLog.findAll({ order: [['createdAt', 'DESC']], limit: 10 });
 
@@ -83,7 +108,26 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
     success: true,
     data: {
       overview: { totalEmployees, totalDepartments: totalDepts },
-      attendance: { present: todayPresent, absent: todayAbsent },
+      attendance: { present: todayPresent, absent: todayAbsent, late: todayLate },
+      attendanceRecords: todayAttendanceRecords.map(r => ({
+        id: r.id,
+        employeeId: r.employee?.id,
+        firstName: r.employee?.firstName,
+        lastName: r.employee?.lastName,
+        employeeCode: r.employee?.employeeId,
+        department: r.employee?.department?.name || '-',
+        checkIn: r.checkIn,
+        checkOut: r.checkOut,
+        workingHours: r.workingHours,
+        status: r.status
+      })),
+      missingEmployees: missingEmployees.map(e => ({
+        id: e.id,
+        firstName: e.firstName,
+        lastName: e.lastName,
+        employeeCode: e.employeeId,
+        department: e.department?.name || '-'
+      })),
       leave: { pending: pendingLeaves },
       tasks: { pending: pendingTasks },
       recentActivities
