@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNotifications } from './useNotifications';
-import NotificationItem from './NotificationItem';
+import NotificationItem from './NotificationItems';
 import NotificationDetailModal from './NotificationDetailModal';
 
 export default function NotificationList() {
