@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
 import { notificationAPI, companyAPI } from '../../services/api';
-import NotificationBell from '../notifications/Notificationbell';
+import NotificationBell from '../notifications/NotificationBell';
 import { HiOutlineMenu, HiOutlineUser, HiOutlineLogout, HiOutlineCog, HiOutlineKey } from 'react-icons/hi';
 
 export default function Navbar() {
