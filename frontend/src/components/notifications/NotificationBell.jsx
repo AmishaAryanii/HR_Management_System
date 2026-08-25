@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { HiOutlineBell } from 'react-icons/hi';
 import { useNotifications } from './useNotifications';
-import NotificationItem from './NotificationItem';
+import NotificationItem from './NotificationItems';
 import NotificationDetailModal from './NotificationDetailModal';
 
 export default function NotificationBell({ onViewAll }) {
