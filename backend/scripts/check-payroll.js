@@ -64,7 +64,7 @@ async function main() {
   }
 
   // Try to find a user who can process payroll
-  const adminUser = await User.findOne({ where: { role: ['super_admin', 'admin'], isActive: true } });
+  const adminUser = await User.findOne({ where: { role: 'admin', isActive: true } });
   if (adminUser) {
     const adminToken = jwt.sign({ id: adminUser.id, role: adminUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
     console.log('\n  --- Testing with admin token (' + adminUser.email + ') ---');

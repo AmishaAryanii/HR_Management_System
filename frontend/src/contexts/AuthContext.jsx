@@ -10,9 +10,8 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null);
 
   const isAuthenticated = !!user;
-  const isSuperAdmin = user?.role === 'super_admin';
-  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
-  const isManager = user?.role === 'manager' || user?.role === 'admin' || user?.role === 'super_admin';
+  const isAdmin = user?.role === 'admin';
+  const isManager = user?.role === 'manager' || user?.role === 'admin';
   const userRole = user?.role || null;
 
   const loadUser = useCallback(async () => {
@@ -78,7 +77,6 @@ export function AuthProvider({ children }) {
 
   const hasPermission = (requiredRoles) => {
     if (!user) return false;
-    if (user.role === 'super_admin') return true;
     return requiredRoles.includes(user.role);
   };
 
@@ -88,7 +86,6 @@ export function AuthProvider({ children }) {
     loading,
     error,
     isAuthenticated,
-    isSuperAdmin,
     isAdmin,
     isManager,
     userRole,

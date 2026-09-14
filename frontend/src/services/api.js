@@ -224,7 +224,6 @@ export const performanceAPI = {
 
 // Dashboard API
 export const dashboardAPI = {
-  getSuperAdmin: () => api.get('/dashboard/super-admin'),
   getAdmin: () => api.get('/dashboard/admin'),
   getManager: () => api.get('/dashboard/manager'),
   getEmployee: () => api.get('/dashboard/employee'),

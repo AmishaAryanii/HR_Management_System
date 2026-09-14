@@ -164,7 +164,7 @@ export default function EmployeeView() {
             <p className="page-subtitle">{employee.employeeId} - {employee.designation?.title || 'No Designation'}</p>
           </div>
         </div>
-        {['super_admin', 'admin'].includes(userRole) && (
+        {userRole === 'admin' && (
           <button onClick={() => navigate(`/employees/${id}/edit`)} className="btn-primary"><HiOutlinePencil className="w-5 h-5 mr-1.5" /> Edit</button>
         )}
       </div>
@@ -220,7 +220,7 @@ export default function EmployeeView() {
                 <div className="p-3 sm:p-4 bg-gray-50/60 rounded-xl"><p className="text-secondary-400 text-xs font-medium uppercase tracking-wider mb-1">Employment Type</p><p className="font-medium text-secondary-900 capitalize">{employee.employmentType?.replace('_', ' ') || '-'}</p></div>
                 <div className="p-3 sm:p-4 bg-gray-50/60 rounded-xl"><p className="text-secondary-400 text-xs font-medium uppercase tracking-wider mb-1">Manager</p><p className="font-medium text-secondary-900">{employee.manager ? `${employee.manager.firstName} ${employee.manager.lastName}` : '-'}</p></div>
                 <div className="p-3 sm:p-4 bg-gray-50/60 rounded-xl"><p className="text-secondary-400 text-xs font-medium uppercase tracking-wider mb-1">Salary</p><p className="font-medium text-secondary-900">{employee.salary ? `₹${parseFloat(employee.salary).toLocaleString('en-IN')}` : '-'}</p></div>
-                {['super_admin', 'admin'].includes(userRole) && (
+                {userRole === 'admin' && (
                   <div className="col-span-full border-t border-gray-100 pt-4 mt-2">
                     <p className="text-secondary-400 text-xs font-medium uppercase tracking-wider mb-3">
                       <HiOutlineShieldCheck className="w-4 h-4 inline mr-1.5" />
@@ -235,7 +235,6 @@ export default function EmployeeView() {
                         <option value="employee">Employee</option>
                         <option value="manager">Manager</option>
                         <option value="admin">Admin</option>
-                        <option value="super_admin">Super Admin</option>
                       </select>
                       <button
                         onClick={() => handleRoleChange(selectedRole)}

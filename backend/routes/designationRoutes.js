@@ -5,8 +5,8 @@ const { getDesignations, getDesignation, createDesignation, updateDesignation, d
 
 router.get('/', authenticate, getDesignations);
 router.get('/:id', authenticate, getDesignation);
-router.post('/', authenticate, authorize('super_admin', 'admin'), createDesignation);
-router.put('/:id', authenticate, authorize('super_admin', 'admin'), updateDesignation);
-router.delete('/:id', authenticate, authorize('super_admin'), deleteDesignation);
+router.post('/', authenticate, authorize('admin'), createDesignation);
+router.put('/:id', authenticate, authorize('admin'), updateDesignation);
+router.delete('/:id', authenticate, authorize('admin'), deleteDesignation);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { employeeAPI, departmentAPI, designationAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 import { HiOutlineEye, HiOutlineEyeOff, HiOutlineShieldCheck } from 'react-icons/hi';
@@ -7,6 +8,7 @@ import { HiOutlineEye, HiOutlineEyeOff, HiOutlineShieldCheck } from 'react-icons
 export default function EmployeeForm() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const isEdit = !!id;
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -37,7 +39,7 @@ export default function EmployeeForm() {
 
         const allEmployees = allEmpRes.data.data || [];
         const managerList = allEmployees.filter(
-          (e) => e.user?.role === 'manager' || e.user?.role === 'admin' || e.user?.role === 'super_admin'
+          (e) => e.user?.role === 'manager' || e.user?.role === 'admin'
         );
         setManagers(managerList);
 

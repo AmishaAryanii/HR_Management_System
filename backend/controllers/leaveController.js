@@ -76,9 +76,9 @@ const getLeave = asyncHandler(async (req, res) => {
 });
 
 const applyLeave = asyncHandler(async (req, res) => {
-  // Admin and Super Admin cannot apply leave for themselves
-  if (['admin', 'super_admin'].includes(req.user.role)) {
-    return res.status(403).json({ success: false, message: 'Admins and Super Admins cannot apply for leave.' });
+  // Admin cannot apply leave for themselves
+  if (req.user.role === 'admin') {
+    return res.status(403).json({ success: false, message: 'Admins cannot apply for leave.' });
   }
 
   const employee = await Employee.findOne({ where: { userId: req.user.id } });
@@ -153,7 +153,7 @@ const approveByManager = asyncHandler(async (req, res) => {
   const employee = await Employee.findOne({ where: { userId: req.user.id } });
   if (!employee) return res.status(404).json({ success: false, message: 'Employee profile not found' });
 
-  // Managers can only approve leaves of their subordinates; admins/super_admins can approve any
+  // Managers can only approve leaves of their subordinates; admins can approve any
   if (req.user.role === 'manager') {
     if (leave.employee.reportingManagerId !== employee.id) {
       return res.status(403).json({ success: false, message: 'You can only approve leaves for employees in your team' });
@@ -183,7 +183,7 @@ const approveByManager = asyncHandler(async (req, res) => {
 
   // Notify admin
   const admins = await Employee.findAll({
-    include: [{ model: require('../models').User, as: 'user', where: { role: ['admin', 'super_admin'], isActive: true } }]
+    include: [{ model: require('../models').User, as: 'user', where: { role: 'admin', isActive: true } }]
   });
   const adminRecipients = [];
   for (const admin of admins) {
@@ -254,7 +254,7 @@ const rejectLeave = asyncHandler(async (req, res) => {
   await leave.update({
     status: 'rejected',
     managerComment: req.user.role === 'manager' ? comment : undefined,
-    adminComment: ['admin', 'super_admin'].includes(req.user.role) ? comment : undefined,
+    adminComment: req.user.role === 'admin' ? comment : undefined,
     rejectedBy: req.user.id,
     rejectedByName: rejectorName,
     rejectedByRole: req.user.role,

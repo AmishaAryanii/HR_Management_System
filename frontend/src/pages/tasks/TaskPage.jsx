@@ -16,10 +16,10 @@ export default function TaskPage() {
   const [form, setForm] = useState({ title: '', description: '', priority: 'medium', assignedTo: '', dueDate: '', category: '' });
 
   // Roles allowed to create/assign tasks
-  const CAN_CREATE_TASK_ROLES = ['super_admin', 'admin', 'manager'];
+  const CAN_CREATE_TASK_ROLES = ['admin', 'manager'];
   const canCreateTask = CAN_CREATE_TASK_ROLES.includes(userRole);
-  // Admin/Super Admin cannot assign tasks to themselves
-  const isAdmin = userRole === 'admin' || userRole === 'super_admin';
+  // Admin cannot assign tasks to themselves
+  const isAdmin = userRole === 'admin';
 
   const fetchData = async () => {
     setLoading(true);
@@ -32,7 +32,7 @@ export default function TaskPage() {
     try {
       const res = await employeeAPI.getLite();
       let list = res.data.data || [];
-      // Admin/Super Admin: remove self from dropdown
+      // Admin: remove self from dropdown
       if (isAdmin && user?.employee?.id) {
         list = list.filter(e => e.id !== user.employee.id);
       }

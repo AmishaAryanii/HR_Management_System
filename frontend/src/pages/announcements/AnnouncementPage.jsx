@@ -31,7 +31,7 @@ const PRIORITY_BADGE = {
 
 export default function AnnouncementPage() {
   const { user } = useAuth();
-  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
+  const isAdmin = user?.role === 'admin';
 
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);

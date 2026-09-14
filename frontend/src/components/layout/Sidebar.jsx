@@ -11,22 +11,7 @@ import {
   HiOutlineShieldCheck, HiOutlineStar, HiOutlineClock
 } from 'react-icons/hi';
 
-const superAdminMenu = [
-  { label: 'Dashboard', path: '/dashboard', icon: HiOutlineHome },
-  { label: 'Employees', path: '/employees', icon: HiOutlineUsers },
-  { label: 'Departments', path: '/departments', icon: HiOutlineOfficeBuilding },
-  { label: 'Designations', path: '/designations', icon: HiOutlineIdentification },
-  { label: 'Attendance', path: '/attendance', icon: HiOutlineCalendar },
-  { label: 'Leaves', path: '/leaves', icon: HiOutlinePaperAirplane },
-  { label: 'Payroll', path: '/payroll', icon: HiOutlineCash },
-  { label: 'Recruitment', path: '/recruitment', icon: HiOutlineBriefcase },
-  { label: 'Performance', path: '/performance', icon: HiOutlineStar },
-  { label: 'Tasks', path: '/tasks', icon: HiOutlineClipboardList },
-  { label: 'Announcements', path: '/announcements', icon: HiOutlineSpeakerphone },
-  { label: 'Documents', path: '/documents', icon: HiOutlineDocumentText },
-  { label: 'Reports', path: '/reports', icon: HiOutlineChartBar },
-  { label: 'Settings', path: '/settings', icon: HiOutlineCog },
-];
+
 
 const adminMenu = [
   { label: 'Dashboard', path: '/dashboard', icon: HiOutlineHome },
@@ -86,7 +71,6 @@ export default function Sidebar() {
 
   const getMenuItems = () => {
     switch (userRole) {
-      case 'super_admin': return superAdminMenu;
       case 'admin': return adminMenu;
       case 'manager': return managerMenu;
       case 'employee': return employeeMenu;

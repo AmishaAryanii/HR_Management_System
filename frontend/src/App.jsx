@@ -15,7 +15,6 @@ const LoginManager = lazy(() => import('./pages/auth/LoginManager'));
 const LoginEmployee = lazy(() => import('./pages/auth/LoginEmployee'));
 const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/auth/ResetPassword'));
-const SuperAdminDashboard = lazy(() => import('./pages/dashboard/SuperAdminDashboard'));
 const AdminDashboard = lazy(() => import('./pages/dashboard/AdminDashboard'));
 const ManagerDashboard = lazy(() => import('./pages/dashboard/ManagerDashboard'));
 const EmployeeDashboard = lazy(() => import('./pages/dashboard/EmployeeDashboard'));
@@ -40,7 +39,6 @@ function DashboardRedirect() {
   const { userRole, loading } = useAuth();
   if (loading) return <LoadingSkeleton />;
   switch (userRole) {
-    case 'super_admin': return <SuperAdminDashboard />;
     case 'admin': return <AdminDashboard />;
     case 'manager': return <ManagerDashboard />;
     default: return <EmployeeDashboard />;
@@ -76,23 +74,23 @@ export default function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardRedirect />} />
 
-          <Route path="employees" element={<ProtectedRoute allowedRoles={['super_admin', 'admin', 'manager']}><EmployeeList /></ProtectedRoute>} />
-          <Route path="employees/new" element={<ProtectedRoute allowedRoles={['super_admin', 'admin']}><EmployeeForm /></ProtectedRoute>} />
-          <Route path="employees/:id/edit" element={<ProtectedRoute allowedRoles={['super_admin', 'admin']}><EmployeeForm /></ProtectedRoute>} />
+          <Route path="employees" element={<ProtectedRoute allowedRoles={['admin', 'manager']}><EmployeeList /></ProtectedRoute>} />
+          <Route path="employees/new" element={<ProtectedRoute allowedRoles={['admin']}><EmployeeForm /></ProtectedRoute>} />
+          <Route path="employees/:id/edit" element={<ProtectedRoute allowedRoles={['admin']}><EmployeeForm /></ProtectedRoute>} />
           <Route path="employees/:id" element={<EmployeeView />} />
 
-          <Route path="departments" element={<ProtectedRoute allowedRoles={['super_admin', 'admin']}><DepartmentList /></ProtectedRoute>} />
-          <Route path="designations" element={<ProtectedRoute allowedRoles={['super_admin', 'admin']}><DesignationList /></ProtectedRoute>} />
+          <Route path="departments" element={<ProtectedRoute allowedRoles={['admin']}><DepartmentList /></ProtectedRoute>} />
+          <Route path="designations" element={<ProtectedRoute allowedRoles={['admin']}><DesignationList /></ProtectedRoute>} />
           <Route path="attendance" element={<AttendancePage />} />
           <Route path="leaves" element={<LeavePage />} />
 
-          <Route path="payroll" element={<ProtectedRoute allowedRoles={['super_admin', 'admin', 'employee']}><PayrollPage /></ProtectedRoute>} />
-          <Route path="recruitment" element={<ProtectedRoute allowedRoles={['super_admin', 'admin']}><RecruitmentPage /></ProtectedRoute>} />
+          <Route path="payroll" element={<ProtectedRoute allowedRoles={['admin', 'employee']}><PayrollPage /></ProtectedRoute>} />
+          <Route path="recruitment" element={<ProtectedRoute allowedRoles={['admin']}><RecruitmentPage /></ProtectedRoute>} />
           <Route path="performance" element={<PerformancePage />} />
           <Route path="tasks" element={<TaskPage />} />
           <Route path="announcements" element={<AnnouncementPage />} />
           <Route path="documents" element={<DocumentPage />} />
-          <Route path="reports" element={<ProtectedRoute allowedRoles={['super_admin', 'admin', 'manager']}><ReportsPage /></ProtectedRoute>} />
+          <Route path="reports" element={<ProtectedRoute allowedRoles={['admin', 'manager']}><ReportsPage /></ProtectedRoute>} />
           <Route path="timesheets" element={<ProtectedRoute><TimesheetPage /></ProtectedRoute>} />
           <Route path="settings" element={<SettingsPage />} />
 

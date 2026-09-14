@@ -10,8 +10,8 @@ import { HiOutlinePlus, HiOutlineCheck, HiOutlineX, HiOutlinePaperAirplane, HiOu
 export default function LeavePage() {
   const { hasPermission, userRole } = useAuth();
   const isManager = userRole === 'manager';
-  const isAdmin = userRole === 'admin' || userRole === 'super_admin';
-  // Admin and Super Admin cannot apply leave for themselves
+  const isAdmin = userRole === 'admin';
+  // Admin cannot apply leave for themselves
   const canApplyLeave = !isAdmin;
   const [leaves, setLeaves] = useState([]);
   const [balances, setBalances] = useState({ casual: 0, sick: 0, earned: 0 });
@@ -23,7 +23,7 @@ export default function LeavePage() {
     setLoading(true);
     try {
       const promises = [leaveAPI.getAll({ limit: 50 })];
-      // Admin/Super Admin don't need leave balances (they can't apply)
+      // Admin doesn't need leave balances (they can't apply)
       if (canApplyLeave) {
         promises.push(leaveAPI.getBalances());
       }
@@ -153,7 +153,7 @@ export default function LeavePage() {
         )}
       </div>
 
-      {/* Leave balance cards — hidden for admin/super_admin */}
+      {/* Leave balance cards — hidden for admin */}
       {canApplyLeave && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <StatCard icon={HiOutlinePaperAirplane} label="Casual Leave" value={balances.casual} color="primary" subtitle="Remaining" />

@@ -15,9 +15,9 @@ const newPassword = process.argv[2] || 'admin123';
     await sequelize.authenticate();
     console.log('Database connected.');
 
-    const admin = await User.findOne({ where: { role: 'super_admin' } });
+    const admin = await User.findOne({ where: { role: 'admin' } });
     if (!admin) {
-      console.error('❌ No super_admin user found. Run seeders first: npm run seed');
+      console.error('❌ No admin user found. Run seeders first: npm run seed');
       process.exit(1);
     }
 

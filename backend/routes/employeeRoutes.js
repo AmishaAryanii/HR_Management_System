@@ -16,17 +16,19 @@ const {
   getMyTeam
 } = require('../controllers/employeeController');
 
-router.get('/stats', authenticate, authorize('super_admin', 'admin'), getEmployeeStats);
+router.get('/stats', authenticate, authorize('admin'), getEmployeeStats);
 router.get('/lite', authenticate, getEmployeesLite);
 router.get('/my-team', authenticate, getMyTeam);
 router.get('/', authenticate, getEmployees);
 router.get('/:id', authenticate, getEmployee);
-router.post('/', authenticate, authorize('super_admin', 'admin'), upload.single('profilePhoto'), createEmployee);
+router.post('/', authenticate, authorize('admin'), upload.single('profilePhoto'), createEmployee);
+
 // Self-update routes must be BEFORE /:id PUT to avoid :id catching 'profile'
 router.put('/profile/photo', authenticate, upload.single('profilePhoto'), uploadProfilePhoto);
 router.put('/profile', authenticate, updateSelf);
-router.put('/:id/role', authenticate, authorize('super_admin', 'admin'), updateUserRole);
-router.put('/:id', authenticate, authorize('super_admin', 'admin'), upload.single('profilePhoto'), updateEmployee);
-router.delete('/:id', authenticate, authorize('super_admin', 'admin'), deleteEmployee);
+
+router.put('/:id/role', authenticate, authorize('admin'), updateUserRole);
+router.put('/:id', authenticate, authorize('admin'), upload.single('profilePhoto'), updateEmployee);
+router.delete('/:id', authenticate, authorize('admin'), deleteEmployee);
 
 module.exports = router;

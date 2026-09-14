@@ -40,7 +40,7 @@ export default function AttendancePage() {
   const [searchParams] = useSearchParams();
   const employeeIdParam = searchParams.get('employeeId');
   const isManager = userRole === 'manager';
-  const isAdmin = userRole === 'admin' || userRole === 'super_admin';
+  const isAdmin = userRole === 'admin';
   const canCheckInOut = userRole === 'employee';
 
   const [records, setRecords] = useState([]);

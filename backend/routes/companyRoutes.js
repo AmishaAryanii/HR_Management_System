@@ -23,7 +23,7 @@ const upload = multer({ storage });
 router.get('/', getCompany);
 
 // Only admins can update company info
-router.put('/', authenticate, authorize('super_admin', 'admin'), updateCompany);
-router.post('/logo', authenticate, authorize('super_admin', 'admin'), upload.single('logo'), uploadLogo);
+router.put('/', authenticate, authorize('admin'), updateCompany);
+router.post('/logo', authenticate, authorize('admin'), upload.single('logo'), uploadLogo);
 
 module.exports = router;

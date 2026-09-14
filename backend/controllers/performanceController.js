@@ -84,8 +84,8 @@ const createReview = asyncHandler(async (req, res) => {
     if (targetEmployee.reportingManagerId !== emp.id) {
       return res.status(403).json({ success: false, message: 'You can only review employees in your team' });
     }
-    // Managers cannot review admin or super_admin users
-    if (targetEmployee.user && ['admin', 'super_admin'].includes(targetEmployee.user.role)) {
+    // Managers cannot review admin users
+    if (targetEmployee.user && targetEmployee.user.role === 'admin') {
       return res.status(403).json({ success: false, message: 'You cannot review administrators' });
     }
   }

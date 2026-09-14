@@ -10,7 +10,7 @@ import { HiOutlineStar, HiOutlinePlus, HiOutlineChartBar } from 'react-icons/hi'
 export default function PerformancePage() {
   const { userRole } = useAuth();
   const isEmployee = userRole === 'employee';
-  const canCreateReview = ['super_admin', 'admin', 'manager'].includes(userRole);
+  const canCreateReview = ['admin', 'manager'].includes(userRole);
   const [reviews, setReviews] = useState([]);
   const [stats, setStats] = useState(null);
   const [employees, setEmployees] = useState([]);

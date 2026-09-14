@@ -32,7 +32,7 @@ const generateTokens = (user) => {
  * Portal-to-role mapping: which roles are allowed for each portal
  */
 const PORTAL_ROLE_MAP = {
-  admin: ['super_admin', 'admin'],
+  admin: ['admin'],
   manager: ['manager'],
   employee: ['employee']
 };
@@ -42,7 +42,6 @@ const PORTAL_ROLE_MAP = {
  */
 const getRoleLabel = (role) => {
   const labels = {
-    super_admin: 'Admins',
     admin: 'Admins',
     manager: 'Managers',
     employee: 'Employees'
@@ -55,7 +54,6 @@ const getRoleLabel = (role) => {
  */
 const getCorrectPortal = (role) => {
   const portals = {
-    super_admin: 'Admin Portal',
     admin: 'Admin Portal',
     manager: 'Manager Portal',
     employee: 'Employee Portal'

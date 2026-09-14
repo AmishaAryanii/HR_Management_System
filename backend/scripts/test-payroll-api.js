@@ -9,7 +9,7 @@ async function main() {
   const User = require('../models').User;
   const Employee = require('../models').Employee;
 
-  const admin = await User.findOne({ where: { role: ['super_admin', 'admin'], isActive: true } });
+  const admin = await User.findOne({ where: { role: 'admin', isActive: true } });
   if (!admin) { console.log('No admin user found'); process.exit(1); }
 
   const token = jwt.sign({ id: admin.id, role: admin.role }, process.env.JWT_SECRET, { expiresIn: '1h' });

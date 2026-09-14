@@ -4,11 +4,11 @@ const { notifyMany } = require('../services/notify');
 const { Op } = Sequelize;
 
 /**
- * Helper: check that the current user is admin or super_admin.
+ * Helper: check that the current user is admin.
  * Returns { ok: true } or sends a 403 response and returns { ok: false }.
  */
 const requireAdmin = (req, res) => {
-  if (!['super_admin', 'admin'].includes(req.user.role)) {
+  if (req.user.role !== 'admin') {
     res.status(403).json({ success: false, message: 'Only admins can perform this action.' });
     return false;
   }
@@ -26,7 +26,7 @@ const getAnnouncements = asyncHandler(async (req, res) => {
   const offset = (page - 1) * limit;
 
   // Non-admin users can only see published announcements
-  const isAdmin = ['super_admin', 'admin'].includes(req.user.role);
+  const isAdmin = req.user.role === 'admin';
   const where = {};
 
   if (status) {
@@ -80,7 +80,7 @@ const getAnnouncement = asyncHandler(async (req, res) => {
 
 /**
  * POST /api/announcements
- * Only admin / super_admin can create an announcement.
+ * Only admin can create an announcement.
  */
 const createAnnouncement = asyncHandler(async (req, res) => {
   if (!requireAdmin(req, res)) return;
@@ -126,7 +126,7 @@ const createAnnouncement = asyncHandler(async (req, res) => {
 
 /**
  * PUT /api/announcements/:id
- * Only admin / super_admin can update an announcement.
+ * Only admin can update an announcement.
  */
 const updateAnnouncement = asyncHandler(async (req, res) => {
   if (!requireAdmin(req, res)) return;
@@ -152,7 +152,7 @@ const updateAnnouncement = asyncHandler(async (req, res) => {
 
 /**
  * DELETE /api/announcements/:id
- * Only admin / super_admin can archive (soft-delete) an announcement.
+ * Only admin can archive (soft-delete) an announcement.
  */
 const deleteAnnouncement = asyncHandler(async (req, res) => {
   if (!requireAdmin(req, res)) return;
@@ -177,7 +177,7 @@ const deleteAnnouncement = asyncHandler(async (req, res) => {
 
 /**
  * PUT /api/announcements/:id/publish
- * Only admin / super_admin can publish a draft announcement.
+ * Only admin can publish a draft announcement.
  */
 const publishAnnouncement = asyncHandler(async (req, res) => {
   if (!requireAdmin(req, res)) return;
@@ -212,7 +212,7 @@ const publishAnnouncement = asyncHandler(async (req, res) => {
 
 /**
  * PUT /api/announcements/:id/unpublish
- * Only admin / super_admin can unpublish (revert to draft).
+ * Only admin can unpublish (revert to draft).
  */
 const unpublishAnnouncement = asyncHandler(async (req, res) => {
   if (!requireAdmin(req, res)) return;

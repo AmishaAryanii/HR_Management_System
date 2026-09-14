@@ -47,9 +47,10 @@ const getEmployees = asyncHandler(async (req, res) => {
   if (employmentType) where.employmentType = employmentType;
   if (gender) where.gender = gender;
 
-  // Role filtering: only for admin/super_admin
+  // Role filtering: only for admin (prevents manager from bypassing team scope)
+  const isAdmin = req.user.role === 'admin';
   const includeUser = { model: User, as: 'user', attributes: ['id', 'username', 'email', 'role', 'isActive'] };
-  if (role && ['super_admin', 'admin', 'manager', 'employee'].includes(role)) {
+  if (role && isAdmin && ['admin', 'manager', 'employee'].includes(role)) {
     includeUser.where = { role };
     includeUser.required = true;
   }
@@ -289,20 +290,12 @@ const updateEmployee = asyncHandler(async (req, res) => {
  */
 const updateUserRole = asyncHandler(async (req, res) => {
   const { role } = req.body;
-  const validRoles = ['super_admin', 'admin', 'manager', 'employee'];
+  const validRoles = ['admin', 'manager', 'employee'];
 
   if (!role || !validRoles.includes(role)) {
     return res.status(400).json({
       success: false,
       message: 'Invalid role. Must be one of: ' + validRoles.join(', ')
-    });
-  }
-
-  // Only super_admin can create/assign super_admin role
-  if (role === 'super_admin' && req.user.role !== 'super_admin') {
-    return res.status(403).json({
-      success: false,
-      message: 'Only super admins can assign super admin role'
     });
   }
 

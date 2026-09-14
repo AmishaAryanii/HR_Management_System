@@ -14,7 +14,7 @@ export default function EmployeeList() {
   const [pagination, setPagination] = useState({ total: 0, page: 1, totalPages: 1, pageSize: 10 });
   const [roleFilter, setRoleFilter] = useState('');
 
-  const canSeeRole = ['super_admin', 'admin'].includes(userRole);
+  const canSeeRole = userRole === 'admin';
 
   const fetchEmployees = async (page = 1, size = 10) => {
     setLoading(true);
@@ -47,13 +47,11 @@ export default function EmployeeList() {
   // Role badge component
   const RoleBadge = ({ role }) => {
     const colors = {
-      super_admin: 'bg-purple-100 text-purple-700 ring-purple-300',
       admin: 'bg-blue-100 text-blue-700 ring-blue-300',
       manager: 'bg-amber-100 text-amber-700 ring-amber-300',
       employee: 'bg-green-100 text-green-700 ring-green-300',
     };
     const labels = {
-      super_admin: 'Super Admin',
       admin: 'Admin',
       manager: 'Manager',
       employee: 'Employee',
@@ -101,7 +99,7 @@ export default function EmployeeList() {
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <span className="text-sm text-secondary-500 mr-1">Role:</span>
           <div className="flex gap-1.5 flex-wrap">
-            {['', 'super_admin', 'admin', 'manager', 'employee'].map(r => (
+            {['', 'admin', 'manager', 'employee'].map(r => (
               <button
                 key={r}
                 onClick={() => setRoleFilter(r)}

@@ -5,8 +5,8 @@ const { getDepartments, getDepartment, createDepartment, updateDepartment, delet
 
 router.get('/', authenticate, getDepartments);
 router.get('/:id', authenticate, getDepartment);
-router.post('/', authenticate, authorize('super_admin', 'admin'), createDepartment);
-router.put('/:id', authenticate, authorize('super_admin', 'admin'), updateDepartment);
-router.delete('/:id', authenticate, authorize('super_admin'), deleteDepartment);
+router.post('/', authenticate, authorize('admin'), createDepartment);
+router.put('/:id', authenticate, authorize('admin'), updateDepartment);
+router.delete('/:id', authenticate, authorize('admin'), deleteDepartment);
 
 module.exports = router;

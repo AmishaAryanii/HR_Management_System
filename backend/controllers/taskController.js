@@ -81,9 +81,9 @@ const createTask = asyncHandler(async (req, res) => {
 
   const { title, description, priority, assignedTo, dueDate, category } = req.body;
 
-  // Admin/Super Admin cannot assign tasks to themselves
-  if (['admin', 'super_admin'].includes(req.user.role)) {
-    if (parseInt(assignedTo) === emp.id) {
+  // Admin cannot assign tasks to themselves
+  if (req.user.role === 'admin') {
+    if (assignedTo && parseInt(assignedTo) === emp.id) {
       return res.status(400).json({ success: false, message: 'Admin cannot assign tasks to themselves. Please assign to another employee.' });
     }
   }
@@ -126,7 +126,7 @@ const updateTask = asyncHandler(async (req, res) => {
       }
     }
   }
-  // Admin/super_admin can update any task
+  // Admin can update any task
 
   await task.update(req.body);
   res.json({ success: true, message: 'Task updated', data: task });

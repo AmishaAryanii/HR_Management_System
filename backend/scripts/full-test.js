@@ -9,7 +9,7 @@ async function main() {
   const User = require('../models').User;
   const Employee = require('../models').Employee;
 
-  const admin = await User.findOne({ where: { role: ['super_admin', 'admin'], isActive: true }, order: [['createdAt', 'ASC']] });
+  const admin = await User.findOne({ where: { role: 'admin', isActive: true }, order: [['createdAt', 'ASC']] });
   if (!admin) { console.log('No admin found'); process.exit(1); }
 
   const normalUser = await User.findOne({ where: { role: 'employee', isActive: true }, order: [['createdAt', 'ASC']] });

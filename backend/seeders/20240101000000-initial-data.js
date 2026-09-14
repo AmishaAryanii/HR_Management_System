@@ -3,14 +3,14 @@ const bcrypt = require('bcryptjs');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Create super admin user
+    // Create admin user
     const hashedPassword = await bcrypt.hash('admin123', 12);
     
     await queryInterface.bulkInsert('users', [{
-      username: 'superadmin',
+      username: 'admin',
       email: 'admin@hrms.com',
       password: hashedPassword,
-      role: 'super_admin',
+      role: 'admin',
       is_active: true,
       is_verified: true,
       created_at: new Date(),
@@ -60,8 +60,7 @@ module.exports = {
 
     // Create roles
     await queryInterface.bulkInsert('roles', [
-      { name: 'Super Admin', slug: 'super_admin', description: 'Full system access', level: 100, is_system: true, created_at: new Date(), updated_at: new Date() },
-      { name: 'Admin', slug: 'admin', description: 'Administrative access', level: 80, is_system: true, created_at: new Date(), updated_at: new Date() },
+      { name: 'Admin', slug: 'admin', description: 'Full system access (highest role)', level: 100, is_system: true, created_at: new Date(), updated_at: new Date() },
       { name: 'Manager', slug: 'manager', description: 'Team management access', level: 50, is_system: true, created_at: new Date(), updated_at: new Date() },
       { name: 'Employee', slug: 'employee', description: 'Basic employee access', level: 10, is_system: true, created_at: new Date(), updated_at: new Date() }
     ]);

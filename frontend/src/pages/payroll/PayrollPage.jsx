@@ -354,7 +354,7 @@ async function downloadPDF(payslipId) {
 
 export default function PayrollPage() {
   const { userRole } = useAuth();
-  const isAdmin = userRole === 'super_admin' || userRole === 'admin';
+  const isAdmin = userRole === 'admin';
   const [payslips, setPayslips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState(null);

@@ -27,7 +27,7 @@ export default function DocumentPage() {
   const [uploading, setUploading] = useState(false);
   const [filter, setFilter] = useState('all');
 
-  const canManage = hasPermission(['super_admin', 'admin']);
+  const canManage = hasPermission(['admin']);
 
   const fetchData = async () => {
     setLoading(true);

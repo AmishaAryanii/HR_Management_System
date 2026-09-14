@@ -2,71 +2,6 @@ const { Employee, User, Department, Designation, Attendance, Leave, Payroll, Pay
 const { asyncHandler } = require('../middleware/errorHandler');
 const { Op, fn, col } = Sequelize;
 
-const getSuperAdminDashboard = asyncHandler(async (req, res) => {
-  const totalEmployees = await Employee.count();
-  const activeEmployees = await Employee.count({ where: { employmentStatus: 'active' } });
-  const totalAdmins = await User.count({ where: { role: { [Op.in]: ['super_admin', 'admin'] }, isActive: true } });
-  // Count employees who are managers (have at least one subordinate)
-  const employeesWithSubordinates = await Employee.findAll({
-    attributes: ['reportingManagerId'],
-    where: { reportingManagerId: { [Op.ne]: null } },
-    group: ['reportingManagerId']
-  });
-  const totalManagers = employeesWithSubordinates.length;
-
-  const today = new Date().toISOString().split('T')[0];
-  const todayAttendance = await Attendance.count({ where: { date: today, status: { [Op.in]: ['present', 'late'] } } });
-  const todayAbsent = await Attendance.count({ where: { date: today, status: 'absent' } });
-  const onLeave = await Leave.count({ where: { status: 'approved', startDate: { [Op.lte]: today }, endDate: { [Op.gte]: today } } });
-
-  const pendingLeaves = await Leave.count({ where: { status: 'pending' } });
-  const month = new Date().getMonth() + 1;
-  const year = new Date().getFullYear();
-  const payrollProcessed = await Payroll.count({ where: { month, year, status: 'generated' } });
-  const payrollPaid = await Payroll.count({ where: { month, year, status: 'paid' } });
-
-  const recentActivities = await ActivityLog.findAll({
-    order: [['createdAt', 'DESC']],
-    limit: 10,
-    include: [{ model: User, as: 'user', attributes: ['id', 'username', 'email'] }]
-  });
-
-  // Department distribution
-const deptDistribution = await Employee.findAll({
-  attributes: ['departmentId', [fn('COUNT', col('Employee.id')), 'count']],
-  where: { employmentStatus: 'active' },
-  include: [{ model: Department, as: 'department', attributes: ['name'] }],
-  group: ['departmentId', 'department.id', 'department.name']
-});
-
-  // Monthly hires
-const monthlyHires = await Employee.findAll({
-    attributes: [
-      [fn('MONTH', col('joining_date')), 'month'],
-      [fn('YEAR', col('joining_date')), 'year'],
-      [fn('COUNT', col('Employee.id')), 'count']
-    ],
-    
-    group: ['month', 'year'],
-    order: [['year', 'DESC'], ['month', 'DESC']],
-    limit: 12
-  });
-
-  const totalPayrollThisMonth = await Payroll.sum('netPay', { where: { month, year } }) || 0;
-
-  res.json({
-    success: true,
-    data: {
-      overview: { totalEmployees, activeEmployees, totalAdmins, totalManagers },
-      attendance: { todayPresent: todayAttendance, todayAbsent, onLeave, totalPresent: todayAttendance + todayAbsent + onLeave },
-      leave: { pending: pendingLeaves },
-      payroll: { processed: payrollProcessed, paid: payrollPaid, totalNetPay: totalPayrollThisMonth },
-      recentActivities,
-      charts: { departmentDistribution: deptDistribution, monthlyHires }
-    }
-  });
-});
-
 const getAdminDashboard = asyncHandler(async (req, res) => {
   const totalEmployees = await Employee.count({ where: { employmentStatus: 'active' } });
   const totalDepts = await Department.count({ where: { status: 'active' } });
@@ -282,4 +217,4 @@ const getEmployeeDashboard = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getSuperAdminDashboard, getAdminDashboard, getManagerDashboard, getEmployeeDashboard };
+module.exports = { getAdminDashboard, getManagerDashboard, getEmployeeDashboard };

@@ -7,8 +7,8 @@ const { getDocuments, getDocument, uploadDocument, verifyDocument, downloadDocum
 router.get('/', authenticate, getDocuments);
 router.get('/:id', authenticate, getDocument);
 router.post('/upload', authenticate, upload.single('file'), uploadDocument);
-router.put('/:id/verify', authenticate, authorize('super_admin', 'admin'), verifyDocument);
+router.put('/:id/verify', authenticate, authorize('admin'), verifyDocument);
 router.get('/:id/download', authenticate, downloadDocument);
-router.delete('/:id', authenticate, authorize('super_admin', 'admin'), deleteDocument);
+router.delete('/:id', authenticate, authorize('admin'), deleteDocument);
 
 module.exports = router;

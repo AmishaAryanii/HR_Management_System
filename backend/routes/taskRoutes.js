@@ -5,9 +5,9 @@ const { getTasks, getTask, createTask, updateTask, updateTaskStatus, deleteTask 
 
 router.get('/', authenticate, getTasks);
 router.get('/:id', authenticate, getTask);
-router.post('/', authenticate, authorize('super_admin', 'admin', 'manager'), createTask);
-router.put('/:id', authenticate, authorize('super_admin', 'admin', 'manager'), updateTask);
-router.put('/:id/status', authenticate, authorize('super_admin', 'admin', 'manager', 'employee'), updateTaskStatus);
-router.delete('/:id', authenticate, authorize('super_admin', 'admin'), deleteTask);
+router.post('/', authenticate, authorize('admin', 'manager'), createTask);
+router.put('/:id', authenticate, authorize('admin', 'manager'), updateTask);
+router.put('/:id/status', authenticate, authorize('admin', 'manager', 'employee'), updateTaskStatus);
+router.delete('/:id', authenticate, authorize('admin'), deleteTask);
 
 module.exports = router;

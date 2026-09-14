@@ -12,6 +12,6 @@ router.post('/check-in', authenticate, checkIn);
 router.post('/check-out', authenticate, checkOut);
 router.post('/break-in', authenticate, breakIn);
 router.post('/break-out', authenticate, breakOut);
-router.post('/mark', authenticate, authorize('super_admin', 'admin'), markAttendance);
+router.post('/mark', authenticate, authorize('admin'), markAttendance);
 
 module.exports = router;
