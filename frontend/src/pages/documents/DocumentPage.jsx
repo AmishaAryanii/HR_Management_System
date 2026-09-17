@@ -28,6 +28,7 @@ export default function DocumentPage() {
   const [filter, setFilter] = useState('all');
 
   const canManage = hasPermission(['admin']);
+  const canUpload = !canManage;
 
   const fetchData = async () => {
     setLoading(true);
@@ -231,9 +232,15 @@ export default function DocumentPage() {
           <h1 className="page-title">Documents</h1>
           <p className="page-subtitle">Upload, manage, and verify employee documents</p>
         </div>
-        <button onClick={() => setUploadModalOpen(true)} className="btn-primary">
-          <HiOutlineUpload className="w-5 h-5 mr-1.5" /> Upload Document
-        </button>
+       {canUpload && (
+  <button
+    onClick={() => setUploadModalOpen(true)}
+    className="btn-primary"
+  >
+    <HiOutlineUpload className="w-5 h-5 mr-1.5" />
+    Upload Document
+  </button>
+)}
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
